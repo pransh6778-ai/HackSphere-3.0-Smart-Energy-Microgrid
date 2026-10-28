@@ -1,0 +1,17 @@
+{
+  "command": "python3 -u app.py",
+  "buildPath": ".",
+  "build_path": "./",
+  "stack": "python_3_9",
+  "memory": 512,
+  "env_variables": {
+    "HS_QML_URL": "https://api.catalyst.zoho.in/quickml/v1/project/101065000000013024/endpoints/predict",
+    "HS_QML_KEY": "05a1779fdf5c405ac58c27792e3d504a5b530c9187a27970e23d8eae62bb5d5ffe4359077f105b8ef8bfb88e6deb3fb8",
+    "HS_ORG_ID": "60093523249",
+    "HS_QML_ENV": "Development",
+    "HS_OAUTH_URL": "https://accounts.zoho.in",
+    "HS_CLIENT_ID": "1000.4AT7UGYZWFSAOB7PBYIOMEY1KFOZER",
+    "HS_CLIENT_SECRET": "56af6de5483174d246b58efeea5fc77628b0931442",
+    "HS_REFRESH_TOKEN": "1000.ee4dcb2e05e2e6433741f51568b17eb9.3409097a523db72807620a16514bce17"
+  }
+}

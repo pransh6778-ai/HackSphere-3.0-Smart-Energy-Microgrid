@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microgrid Forecast Engine | Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>window.Chart||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.3/chart.umd.min.js"><\/script>')</script>
+<link rel="stylesheet" href="main.css">
+</head>
+<body data-page="dash">
+<canvas id="bgCanvas" aria-hidden="true"></canvas>
+
+<header class="topbar">
+  <div class="brand"><span class="brand-mark"></span>Microgrid Forecast Engine</div>
+  <div class="topbar-right">
+    <span class="chip" id="sourceChip">--</span>
+    <span class="chip" id="qualityChip">--</span>
+    <a class="btn-ghost" href="index.html" data-nav>New forecast</a>
+  </div>
+</header>
+
+<main class="dash">
+  <div class="alert hidden" id="alertBanner" role="alert"><span class="alert-icon">!</span><span id="alertText"></span></div>
+
+  <section class="mode-hero" id="modeHero">
+    <div>
+      <p class="muted">Dispatch summary</p>
+      <h1 id="modeTitle">--</h1>
+      <p id="modeDesc" class="muted"></p>
+    </div>
+    <div class="gauge">
+      <svg viewBox="0 0 120 120"><circle class="g-bg" cx="60" cy="60" r="52"/><circle class="g-fg" id="gaugeFg" cx="60" cy="60" r="52"/></svg>
+      <div class="g-label"><strong id="gaugeVal">0</strong><span>% of limit at peak</span></div>
+    </div>
+  </section>
+
+  <section class="kpis">
+    <article class="kpi tilt"><span>Peak demand</span><strong id="kPeak">0</strong><em id="kPeakHr"></em></article>
+    <article class="kpi tilt"><span>Average load</span><strong id="kAvg">0</strong><em>kW across 24 hours</em></article>
+    <article class="kpi tilt"><span>Storage hours</span><strong id="kStore">0</strong><em>hours on renewable storage</em></article>
+    <article class="kpi tilt"><span>Critical alerts</span><strong id="kOver">0</strong><em>hours at or above 200 kW</em></article>
+  </section>
+
+  <section class="panel wide">
+    <div class="panel-head">
+      <h2>Live dispatch simulation</h2>
+      <div class="play-ctrl"><button class="btn-ghost" id="btnPlay">Play</button><button class="btn-ghost" id="btnRestart">Restart</button></div>
+    </div>
+    <div class="live-grid">
+      <div class="live-badge" id="liveBadge">
+        <span class="live-time" id="liveTime">00:00</span>
+        <strong id="liveMode">--</strong>
+        <span id="liveKw" class="muted"></span>
+        <span class="tag live-alert hidden" id="liveAlert" style="--c:#e5484d">Critical overload</span>
+      </div>
+      <div class="soc">
+        <div class="soc-top"><span>Battery state of charge</span><b id="socVal">--</b></div>
+        <div class="soc-bar"><i id="socFill"></i></div>
+        <small class="muted" id="socNote">Simulated from the dispatch plan.</small>
+      </div>
+    </div>
+    <input type="range" id="scrub" min="0" max="23" value="0" aria-label="Select hour">
+  </section>
+
+  <section class="panel wide">
+    <div class="panel-head">
+      <h2>Predicted load curve</h2>
+      <div class="panel-tools">
+        <label class="check"><input type="checkbox" id="toggleSoc"> Show battery %</label>
+        <div class="seg" id="chartToggle"><button class="active" data-type="line">Line</button><button data-type="bar">Bars</button></div>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="forecastChart"></canvas></div>
+  </section>
+
+  <section class="panel wide">
+    <div class="panel-head">
+      <h2>Dispatch timeline</h2>
+      <div class="legend"><i class="d-grid"></i>Main grid <i class="d-store"></i>Renewable storage <i class="d-over"></i>Critical alert</div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+    <div class="detail" id="detail">Hover or tap an hour to see its details.</div>
+  </section>
+
+  <section class="panel wide">
+    <div class="panel-head">
+      <h2>Hour-by-hour table</h2>
+      <div class="panel-tools">
+        <div class="seg" id="filterSeg"><button class="active" data-f="all">All</button><button data-f="store">Storage</button><button data-f="alert">Alerts</button></div>
+        <button class="btn-ghost" id="btnPred" title="timestamp,target_demand_kw">predictions.csv</button>
+        <button class="btn-ghost" id="btnFull">Full CSV</button>
+        <button class="btn-ghost" id="btnJson">JSON</button>
+      </div>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Hour</th><th>Demand (kW)</th><th>Load vs 200 kW</th><th>Mode</th><th>Alert</th><th>Battery</th></tr></thead><tbody id="tbody"></tbody></table></div>
+  </section>
+</main>
+<script src="config.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

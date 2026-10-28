@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microgrid Forecast Engine | Input</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="main.css">
+<script>addEventListener("pageshow",function(e){if(e.persisted)location.reload();});</script>
+</head>
+<body data-page="input">
+<canvas id="bgCanvas" aria-hidden="true"></canvas>
+
+<header class="topbar">
+  <div class="brand"><span class="brand-mark"></span>Microgrid Forecast Engine</div>
+  <div class="topbar-right"><span class="chip" id="apiChip">--</span><span class="live-dot"></span><span id="clock">--:--:--</span></div>
+</header>
+
+<main class="input-page">
+  <section class="intro">
+    <h1>Forecast tomorrow's demand and plan the dispatch.</h1>
+    <p>Provide 24 hourly telemetry rows. The engine predicts demand in kW, switches between main grid and renewable storage, and raises an alert at 200 kW.</p>
+    <ul class="intro-stats">
+      <li><strong data-count="24">0</strong>hourly forecasts</li>
+      <li><strong data-count="160">0</strong>kW storage threshold</li>
+      <li><strong data-count="200">0</strong>kW critical alert</li>
+    </ul>
+    <div class="history hidden" id="history"><h2>Recent runs</h2><div id="historyList"></div></div>
+  </section>
+
+  <section class="panel tilt" id="panel">
+    <div class="tabs" role="tablist">
+      <span class="tab-glider"></span>
+      <button class="tab active" id="tabCsv" role="tab">Upload CSV</button>
+      <button class="tab" id="tabManual" role="tab">Enter manually</button>
+    </div>
+
+    <div id="sectionCsv" class="pane">
+      <label class="dropzone" id="dropzone" for="csvFileInput">
+        <input type="file" id="csvFileInput" accept=".csv" hidden>
+        <svg viewBox="0 0 48 48" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 33V10M14 20l10-10 10 10"/><path d="M8 34v4a2 2 0 0 0 2 2h28a2 2 0 0 0 2-2v-4"/></svg>
+        <span class="dz-title" id="dzTitle">Drop a CSV file here, or click to browse</span>
+        <span class="dz-sub" id="fileNameDisplay">Columns: timestamp, ambient_temp_c, humidity_pct, solar_irradiance_wm2 (24 rows)</span>
+      </label>
+      <p class="quality hidden" id="csvQuality"></p>
+      <div id="csvPreview" class="preview hidden"></div>
+      <button type="button" class="link-btn" id="btnSample">Download a sample CSV</button>
+    </div>
+
+    <div id="sectionManual" class="pane hidden">
+      <div class="field-row"><label for="dateInput">Forecast date</label><input type="date" id="dateInput"></div>
+      <div class="slider-row"><label for="tempInput">Ambient temperature</label><output id="tempOut"></output></div>
+      <input type="range" id="tempInput" min="0" max="50" step="0.5" value="32">
+      <div class="slider-row"><label for="humidityInput">Humidity</label><output id="humOut"></output></div>
+      <input type="range" id="humidityInput" min="10" max="100" step="1" value="55">
+      <div class="slider-row"><label for="solarInput">Peak solar irradiance</label><output id="solOut"></output></div>
+      <input type="range" id="solarInput" min="0" max="1200" step="10" value="800">
+      <details class="hourly">
+        <summary>Edit individual hours</summary>
+        <div class="hourly-wrap"><table><thead><tr><th>Hour</th><th>Temp °C</th><th>Humidity %</th><th>Solar W/m²</th></tr></thead><tbody id="hourlyBody"></tbody></table></div>
+      </details>
+      <p class="hint">Sliders fill the table with a daylight curve. Edit any cell to override it; blank cells are filled with the column average.</p>
+    </div>
+
+    <p class="error hidden" id="errorMsg" role="alert"></p>
+    <button id="btnGenerate" class="btn-primary">Run 24-hour forecast</button>
+  </section>
+</main>
+
+<div class="loader hidden" id="loader">
+  <div class="loader-box">
+    <div class="spinner"></div>
+    <h2 id="loaderTitle">Running pipeline</h2>
+    <ul id="loaderSteps">
+      <li>Validating schema and filling gaps</li>
+      <li>Engineering time features</li>
+      <li>Requesting demand forecast</li>
+      <li>Applying transition controller</li>
+      <li>Saving results</li>
+    </ul>
+  </div>
+</div>
+<script src="config.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

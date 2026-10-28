@@ -1,0 +1,13 @@
+{
+  "appsail": [
+    {
+      "name": "microgrid-core-api",
+      "source": "microgrid-core-api",
+      "stack": "python_3_9"
+    }
+  ],
+  "client": {
+    "name": "GridMonitor",
+    "source": "GridMonitor"
+  }
+}
